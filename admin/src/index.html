@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C1 Trader Pro – Painel Admin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; }
+    header { background: #1a1d2e; padding: 16px 32px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #2d3748; }
+    header h1 { font-size: 1.4rem; color: #f6c90e; }
+    .badge { background: #f6c90e; color: #0f1117; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+    main { max-width: 1100px; margin: 32px auto; padding: 0 16px; }
+    .card { background: #1a1d2e; border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #2d3748; }
+    .card h2 { font-size: 1rem; color: #f6c90e; margin-bottom: 16px; }
+    .form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+    input, select { background: #0f1117; border: 1px solid #2d3748; color: #e2e8f0; padding: 8px 12px; border-radius: 8px; font-size: 0.9rem; flex: 1; min-width: 140px; }
+    button { padding: 8px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+    .btn-primary { background: #f6c90e; color: #0f1117; }
+    .btn-danger  { background: #e53e3e; color: #fff; }
+    .btn-success { background: #38a169; color: #fff; }
+    .btn-sm { padding: 4px 12px; font-size: 0.8rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; padding: 8px 12px; color: #a0aec0; border-bottom: 1px solid #2d3748; font-weight: 600; }
+    td { padding: 10px 12px; border-bottom: 1px solid #1e2235; vertical-align: middle; }
+    tr:hover td { background: #1e2235; }
+    .status-active   { color: #68d391; font-weight: 600; }
+    .status-blocked  { color: #fc8181; font-weight: 600; }
+    .status-expired  { color: #f6ad55; font-weight: 600; }
+    .token-row { display: flex; gap: 8px; margin-bottom: 16px; }
+    #authToken { max-width: 320px; }
+    .msg { padding: 10px 16px; border-radius: 8px; margin-bottom: 12px; font-size: 0.88rem; display: none; }
+    .msg.ok  { background: #22543d; color: #9ae6b4; display: block; }
+    .msg.err { background: #742a2a; color: #feb2b2; display: block; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>C1 Trader Pro</h1>
+  <span class="badge">ADMIN</span>
+</header>
+
+<main>
+  <!-- Autenticação -->
+  <div class="card">
+    <h2>Autenticação</h2>
+    <div class="token-row">
+      <input id="authToken" type="password" placeholder="Admin Token" />
+      <button class="btn-primary" onclick="saveToken()">Salvar Token</button>
+      <button class="btn-primary" onclick="loadLicenses()">Carregar Licenças</button>
+    </div>
+    <div id="apiUrl-row" class="form-row">
+      <input id="apiUrl" type="text" placeholder="URL da API (ex: http://localhost:3000)" value="http://localhost:3000" style="max-width:400px" />
+    </div>
+  </div>
+
+  <div id="msg" class="msg"></div>
+
+  <!-- Criar licença -->
+  <div class="card">
+    <h2>Nova Licença</h2>
+    <div class="form-row">
+      <input id="newExpires"  type="date" placeholder="Expiração" />
+      <input id="newAccount"  type="number" placeholder="Conta MT5 (opcional)" />
+      <input id="newBroker"   type="text" placeholder="Corretora (opcional)" />
+      <input id="newSymbol"   type="text" placeholder="Símbolo (opcional)" value="XAUUSD" />
+      <button class="btn-primary" onclick="createLicense()">Criar Licença</button>
+    </div>
+  </div>
+
+  <!-- Tabela de licenças -->
+  <div class="card">
+    <h2>Licenças Ativas</h2>
+    <table id="licTable">
+      <thead>
+        <tr>
+          <th>Chave</th>
+          <th>Status</th>
+          <th>Conta</th>
+          <th>Corretora</th>
+          <th>Símbolo</th>
+          <th>Expira em</th>
+          <th>Criado</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="licBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Logs -->
+  <div class="card">
+    <h2>Logs de Validação</h2>
+    <button class="btn-primary btn-sm" style="margin-bottom:12px" onclick="loadLogs()">Atualizar Logs</button>
+    <table>
+      <thead>
+        <tr><th>Chave</th><th>Conta</th><th>Corretora</th><th>Resultado</th><th>IP</th><th>Data</th></tr>
+      </thead>
+      <tbody id="logBody"></tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+  let TOKEN = '';
+  let API   = 'http://localhost:3000';
+
+  function saveToken() {
+    TOKEN = document.getElementById('authToken').value.trim();
+    API   = document.getElementById('apiUrl').value.trim().replace(/\/$/, '');
+    showMsg('Token salvo. Clique em Carregar Licenças.', 'ok');
+  }
+
+  function headers() {
+    return { 'Content-Type': 'application/json', 'x-admin-token': TOKEN };
+  }
+
+  function showMsg(text, type) {
+    const el = document.getElementById('msg');
+    el.textContent = text;
+    el.className = 'msg ' + type;
+    setTimeout(() => el.className = 'msg', 4000);
+  }
+
+  async function loadLicenses() {
+    const res = await fetch(`${API}/admin/licenses`, { headers: headers() });
+    if (!res.ok) { showMsg('Erro ao carregar licenças', 'err'); return; }
+    const data = await res.json();
+    const body = document.getElementById('licBody');
+    body.innerHTML = data.map(l => `
+      <tr>
+        <td><code>${l.license_key}</code></td>
+        <td class="status-${l.status}">${l.status}</td>
+        <td>${l.account || '-'}</td>
+        <td>${l.broker || '-'}</td>
+        <td>${l.symbol || '-'}</td>
+        <td>${l.expires_at ? l.expires_at.split('T')[0] : '-'}</td>
+        <td>${l.created_at ? l.created_at.split('T')[0] : '-'}</td>
+        <td style="display:flex;gap:6px">
+          ${l.status !== 'blocked' ? `<button class="btn-danger btn-sm" onclick="revoke('${l.license_key}')">Revogar</button>` : `<button class="btn-success btn-sm" onclick="activate('${l.license_key}')">Ativar</button>`}
+          <button class="btn-danger btn-sm" onclick="deleteLic('${l.license_key}')">Excluir</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  async function createLicense() {
+    const body = {
+      expires_at: document.getElementById('newExpires').value,
+      account:    document.getElementById('newAccount').value  || undefined,
+      broker:     document.getElementById('newBroker').value   || undefined,
+      symbol:     document.getElementById('newSymbol').value   || undefined,
+    };
+    if (!body.expires_at) { showMsg('Informe a data de expiração', 'err'); return; }
+    const res = await fetch(`${API}/admin/licenses`, { method: 'POST', headers: headers(), body: JSON.stringify(body) });
+    const data = await res.json();
+    if (!res.ok) { showMsg(data.error || 'Erro', 'err'); return; }
+    showMsg(`Licença criada: ${data.license_key}`, 'ok');
+    loadLicenses();
+  }
+
+  async function revoke(key) {
+    if (!confirm(`Revogar ${key}?`)) return;
+    await fetch(`${API}/admin/licenses/${key}/revoke`, { method: 'PATCH', headers: headers() });
+    showMsg('Licença revogada', 'ok');
+    loadLicenses();
+  }
+
+  async function activate(key) {
+    const exp = prompt('Nova data de expiração (YYYY-MM-DD):');
+    await fetch(`${API}/admin/licenses/${key}/activate`, {
+      method: 'PATCH', headers: headers(),
+      body: JSON.stringify({ expires_at: exp || undefined })
+    });
+    showMsg('Licença reativada', 'ok');
+    loadLicenses();
+  }
+
+  async function deleteLic(key) {
+    if (!confirm(`Excluir permanentemente ${key}?`)) return;
+    await fetch(`${API}/admin/licenses/${key}`, { method: 'DELETE', headers: headers() });
+    showMsg('Licença excluída', 'ok');
+    loadLicenses();
+  }
+
+  async function loadLogs() {
+    const res  = await fetch(`${API}/admin/logs`, { headers: headers() });
+    const data = await res.json();
+    document.getElementById('logBody').innerHTML = data.map(l => `
+      <tr>
+        <td><code>${l.license_key}</code></td>
+        <td>${l.account || '-'}</td>
+        <td>${l.broker || '-'}</td>
+        <td class="status-${l.result}">${l.result}</td>
+        <td>${l.ip || '-'}</td>
+        <td>${l.created_at ? l.created_at.split('T')[0] : '-'}</td>
+      </tr>`).join('');
+  }
+</script>
+
+</body>
+</html>
