@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eternure &mdash; Simulador de Custo &amp; Precificação</title>
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="Eternure" class="brand__mark">
+      <div class="brand__text">
+        <span class="brand__name">ETERNURE</span>
+        <span class="brand__tagline">Personalização &amp; Brindes</span>
+      </div>
+    </div>
+    <button id="btn-pdf" class="btn btn--ghost" type="button">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M15 2v5h5"/><path d="M9 15h6"/><path d="M9 11h6"/></svg>
+      Gerar PDF
+    </button>
+  </div>
+</header>
+
+<main class="page">
+
+  <section class="hero">
+    <h1>Simulador de Custo &amp; Resultado</h1>
+    <p>Precifique seus produtos personalizados com precisão. Preencha os dados abaixo e acompanhe, em tempo real, o custo total, a margem e o preço final de venda.</p>
+  </section>
+
+  <section class="panels">
+
+    <!-- INPUT PANEL -->
+    <form class="card card--form" id="form-simulador" autocomplete="off">
+
+      <div class="card__section">
+        <h2 class="card__title">Produto</h2>
+        <div class="field">
+          <label for="nomeProduto">Nome do produto</label>
+          <input type="text" id="nomeProduto" value="Caderno personalizado" maxlength="60">
+        </div>
+      </div>
+
+      <div class="card__section">
+        <h2 class="card__title">Custos de compra e produção</h2>
+        <div class="field-grid">
+          <div class="field">
+            <label for="custoUnitario">Custo unitário</label>
+            <div class="input-prefix">
+              <span>R$</span>
+              <input type="number" id="custoUnitario" value="1" min="0" step="0.01">
+            </div>
+          </div>
+          <div class="field">
+            <label for="quantidade">Quantidade total</label>
+            <input type="number" id="quantidade" value="100" min="1" step="1">
+          </div>
+          <div class="field">
+            <label for="frete">Frete de compra</label>
+            <div class="input-prefix">
+              <span>R$</span>
+              <input type="number" id="frete" value="30" min="0" step="0.01">
+            </div>
+          </div>
+          <div class="field">
+            <label for="custoProducao">Custo de produção</label>
+            <div class="input-prefix">
+              <span>R$</span>
+              <input type="number" id="custoProducao" value="1.3" min="0" step="0.01">
+            </div>
+          </div>
+          <div class="field">
+            <label for="pctImpostoCompra">Imposto de compra</label>
+            <div class="input-suffix">
+              <input type="number" id="pctImpostoCompra" value="5" min="0" step="0.1">
+              <span>%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card__section">
+        <h2 class="card__title">Margem e imposto de venda</h2>
+        <div class="field-grid">
+          <div class="field">
+            <label for="margemLucro">Margem de lucro</label>
+            <div class="input-suffix">
+              <input type="number" id="margemLucro" value="30" min="0" step="0.1">
+              <span>%</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="pctImpostoVenda">Imposto de venda</label>
+            <div class="input-suffix">
+              <input type="number" id="pctImpostoVenda" value="24" min="0" step="0.1">
+              <span>%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- RESULTS PANEL -->
+    <section class="card card--results">
+      <h2 class="card__title">Resultado</h2>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <span class="stat__label">Custo total</span>
+          <span class="stat__value" id="out-custoTotal">—</span>
+        </div>
+        <div class="stat">
+          <span class="stat__label">Preço de venda</span>
+          <span class="stat__value" id="out-precoVenda">—</span>
+        </div>
+        <div class="stat stat--accent">
+          <span class="stat__label">Valor de venda c/ imposto</span>
+          <span class="stat__value" id="out-valorVendaImposto">—</span>
+        </div>
+        <div class="stat stat--profit">
+          <span class="stat__label">Lucro total</span>
+          <span class="stat__value" id="out-lucroTotal">—</span>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="breakdown">
+          <thead>
+            <tr><th>Descrição</th><th>Fórmula</th><th>Valor</th></tr>
+          </thead>
+          <tbody id="breakdown-body">
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </section>
+
+  <footer class="page-footer">
+    <p>Eternure &middot; Personalização &amp; Brindes &middot; Simulador interno de custo e precificação</p>
+  </footer>
+
+</main>
+
+<!-- PRINT-ONLY REPORT -->
+<section id="print-report" class="print-report">
+  <div class="print-report__header">
+    <img src="assets/logo.svg" alt="Eternure" class="print-report__logo">
+    <div>
+      <div class="print-report__brand">ETERNURE</div>
+      <div class="print-report__tagline">Personalização &amp; Brindes</div>
+    </div>
+    <div class="print-report__date" id="print-date"></div>
+  </div>
+
+  <h1 class="print-report__title">Resumo de Custo e Precificação</h1>
+  <p class="print-report__product">Produto: <strong id="print-nomeProduto">—</strong></p>
+
+  <table class="print-report__table print-report__table--inputs">
+    <thead><tr><th colspan="2">Dados informados</th></tr></thead>
+    <tbody id="print-inputs-body"></tbody>
+  </table>
+
+  <table class="print-report__table">
+    <thead><tr><th>Descrição</th><th>Fórmula</th><th>Valor</th></tr></thead>
+    <tbody id="print-breakdown-body"></tbody>
+  </table>
+
+  <div class="print-report__summary">
+    <div>
+      <span>Custo total</span>
+      <strong id="print-custoTotal">—</strong>
+    </div>
+    <div>
+      <span>Preço de venda</span>
+      <strong id="print-precoVenda">—</strong>
+    </div>
+    <div>
+      <span>Valor de venda c/ imposto</span>
+      <strong id="print-valorVendaImposto">—</strong>
+    </div>
+    <div>
+      <span>Lucro total</span>
+      <strong id="print-lucroTotal">—</strong>
+    </div>
+  </div>
+
+  <p class="print-report__footer">Documento gerado automaticamente pelo Simulador de Custo Eternure.</p>
+</section>
+
+<script src="js/app.js"></script>
+</body>
+</html>

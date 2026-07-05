@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <g stroke="#8B7A54" stroke-width="14" stroke-linecap="round" fill="none">
+    <!-- upper-left ring -->
+    <ellipse cx="155" cy="145" rx="70" ry="56" transform="rotate(-24 155 145)"/>
+    <!-- upper-right ring -->
+    <ellipse cx="245" cy="145" rx="70" ry="56" transform="rotate(24 245 145)"/>
+    <!-- bottom ring -->
+    <ellipse cx="200" cy="272" rx="50" ry="80"/>
+    <!-- connecting arc left -->
+    <path d="M110,190 C130,215 160,222 190,208" />
+    <!-- connecting arc right -->
+    <path d="M290,190 C270,215 240,222 210,208" />
+  </g>
+</svg>
