@@ -18,10 +18,16 @@
         <span class="brand__tagline">Personalização &amp; Brindes</span>
       </div>
     </div>
-    <button id="btn-pdf" class="btn btn--ghost" type="button">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M15 2v5h5"/><path d="M9 15h6"/><path d="M9 11h6"/></svg>
-      Gerar PDF
-    </button>
+    <div class="topbar__actions">
+      <button id="btn-excel" class="btn btn--outline" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M15 2v5h5"/><path d="M8 13l3 5m0-5l-3 5"/><path d="M15 13v5"/></svg>
+        Exportar Excel
+      </button>
+      <button id="btn-pdf" class="btn btn--ghost" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M15 2v5h5"/><path d="M9 15h6"/><path d="M9 11h6"/></svg>
+        Gerar PDF
+      </button>
+    </div>
   </div>
 </header>
 
@@ -126,6 +132,14 @@
           <span class="stat__label">Lucro total</span>
           <span class="stat__value" id="out-lucroTotal">—</span>
         </div>
+        <div class="stat">
+          <span class="stat__label">Custo unitário de venda</span>
+          <span class="stat__value" id="out-custoUnitarioVenda">—</span>
+        </div>
+        <div class="stat stat--profit">
+          <span class="stat__label">Lucro unitário</span>
+          <span class="stat__value" id="out-lucroUnitario">—</span>
+        </div>
       </div>
 
       <div class="table-wrap">
@@ -147,52 +161,8 @@
 
 </main>
 
-<!-- PRINT-ONLY REPORT -->
-<section id="print-report" class="print-report">
-  <div class="print-report__header">
-    <img src="assets/logo.svg" alt="Eternure" class="print-report__logo">
-    <div>
-      <div class="print-report__brand">ETERNURE</div>
-      <div class="print-report__tagline">Personalização &amp; Brindes</div>
-    </div>
-    <div class="print-report__date" id="print-date"></div>
-  </div>
-
-  <h1 class="print-report__title">Resumo de Custo e Precificação</h1>
-  <p class="print-report__product">Produto: <strong id="print-nomeProduto">—</strong></p>
-
-  <table class="print-report__table print-report__table--inputs">
-    <thead><tr><th colspan="2">Dados informados</th></tr></thead>
-    <tbody id="print-inputs-body"></tbody>
-  </table>
-
-  <table class="print-report__table">
-    <thead><tr><th>Descrição</th><th>Fórmula</th><th>Valor</th></tr></thead>
-    <tbody id="print-breakdown-body"></tbody>
-  </table>
-
-  <div class="print-report__summary">
-    <div>
-      <span>Custo total</span>
-      <strong id="print-custoTotal">—</strong>
-    </div>
-    <div>
-      <span>Preço de venda</span>
-      <strong id="print-precoVenda">—</strong>
-    </div>
-    <div>
-      <span>Valor de venda c/ imposto</span>
-      <strong id="print-valorVendaImposto">—</strong>
-    </div>
-    <div>
-      <span>Lucro total</span>
-      <strong id="print-lucroTotal">—</strong>
-    </div>
-  </div>
-
-  <p class="print-report__footer">Documento gerado automaticamente pelo Simulador de Custo Eternure.</p>
-</section>
-
+<script src="js/vendor/jspdf.umd.min.js"></script>
+<script src="js/vendor/logo-base64.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
