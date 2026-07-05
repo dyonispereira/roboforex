@@ -1,7 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
-  <g stroke="#c3a878" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path d="M200.0,210.0 C207.7,148.8 182.4,108.2 123.2,87.0 C116.2,149.5 141.6,190.1 200.0,210.0 Z"/>
-    <path d="M200.0,210.0 C258.4,190.1 283.8,149.5 276.8,87.0 C217.6,108.2 192.3,148.8 200.0,210.0 Z"/>
-    <path d="M200.0,210.0 C159.1,255.5 159.1,300.9 200.0,347.8 C240.9,300.9 240.9,255.5 200.0,210.0 Z"/>
+  <g stroke="#8b7d5a" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- top peak stems -->
+    <path d="M200,58 C185,72 172,82 162,94"/>
+    <path d="M200,58 C215,72 228,82 238,94"/>
+    <!-- upper-left ring -->
+    <ellipse cx="152" cy="150" rx="68" ry="57" transform="rotate(-22 152 150)"/>
+    <!-- upper-right ring -->
+    <ellipse cx="248" cy="150" rx="68" ry="57" transform="rotate(22 248 150)"/>
+    <!-- bottom ring -->
+    <ellipse cx="200" cy="278" rx="49" ry="80"/>
   </g>
 </svg>
