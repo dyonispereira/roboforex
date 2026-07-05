@@ -7,6 +7,10 @@
     <ellipse cx="152" cy="150" rx="68" ry="57" transform="rotate(-22 152 150)"/>
     <!-- upper-right ring -->
     <ellipse cx="248" cy="150" rx="68" ry="57" transform="rotate(22 248 150)"/>
+    <!-- connecting arc left (under crossing) -->
+    <path d="M112,192 C130,218 158,228 188,214"/>
+    <!-- connecting arc right (mirror) -->
+    <path d="M288,192 C270,218 242,228 212,214"/>
     <!-- bottom ring -->
     <ellipse cx="200" cy="278" rx="49" ry="80"/>
   </g>
